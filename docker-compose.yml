@@ -1,0 +1,54 @@
+version: "3"
+services:
+  app:
+    container_name: app
+    restart: always
+    build: ./app
+    expose:
+      - "8000"
+    volumes:
+      - ./app:/usr/src/app
+    depends_on:
+      - mysql
+    networks:
+      - web_network
+      - db_network
+  mysql:
+    container_name: mysql
+    image: mysql:5.7
+    build: ./mysql
+    env_file: env
+    ports:
+      - "3306:3306"
+    restart: always
+    volumes:
+      - /home/ubuntu/mysql:/var/lib/mysql
+    command:
+      ['mysqld','--character-set-server=utf8mb4','--collation-server=utf8mb4_unicode_ci']
+    networks:
+      - db_network
+  nginx:
+    container_name: nginx
+    build: ./nginx
+    restart: always
+    image: nginx:latest
+    volumes:
+      - ./app/application/static:/code/static
+      - ./app/application/templates:/code/static/templates
+    ports:
+      - "8000:8000"
+
+    depends_on:
+      - app
+    networks:
+      - web_network
+
+
+networks:
+  web_network:
+    driver: bridge
+  db_network:
+    driver: bridge
+
+volumes:
+  static-volume:

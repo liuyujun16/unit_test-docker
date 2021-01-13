@@ -1,0 +1,10 @@
+flask
+pyjwt
+PyMySQL
+scrypt
+flask_sqlalchemy
+flask_script
+flask_migrate
+python-dotenv
+pyyaml
+gunicorn==19.9.0
